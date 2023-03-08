@@ -1,1 +1,50 @@
-# CoPublication_Networks
+# Overview
+This repository contains code to generate co-publication networks in `R`. We perform pubmed searches using `reutils` between each author in the provided input list pairwise. The output of the script `FacultyCoPubSearchNetworks.R` contains a list of all resulting articles identified in the date range specified (`--minyear` and `--maxyear`), as well as the co-publication count for each author pair, and lastly a network graph drawn for all co-publications identified.
+
+# Input
+The input query author list (`.xlsx`, or tab-delimited text readable by `read_tsv`) has three columns:  
+1) Author last name `<space>` Author first name
+2) Author last name `<space>` Author first initial
+3) Author role (currently ignored)
+
+A snippet of an example input query author list is as follows:  
+![image](https://user-images.githubusercontent.com/37712091/223865882-f4ead60d-0570-4bb3-8b06-9622fc144bbb.png)
+
+# Input parameters
+```
+Options:
+	-i FILENAME, --input=FILENAME
+		Filename of input table containing faculty names
+		Must be tab-delimited text or xlsx
+			Column 1: AuthorLast AuthorFirst
+			Column 2: AuthorLast AuthorFirstInitial
+			Column 3: AuthorRole
+
+	--minyear=MINYEAR
+		Beginning year of date range for query (YYYY)
+
+	--maxyear=MAXYEAR
+		End year of date range for query (YYYY)
+
+	-a AFFL, --affl=AFFL
+		Author affiliation for query, e.g. 'University of North Carolina'
+
+	-h, --help
+		Show this help message and exit
+```
+
+# Query performed
+The pubmed query performed here searches for either instance of the author's names, in essence:  
+`(author1 full name OR author1 first initial) AND (author2 full name OR author2 first initial)`
+
+And further, is specific to the specified affiliation (`-a` or `--affl`) such that the query includes this for each author's `[AFFL]`. This largely avoids issues where a given author name is not "pubmed unique". However, _author's names that are not unique to the given affiliation will return any and all matches_; thus some manual pruning of the output may be desired. 
+
+# Output
+* CoPublication_table_full.txt
+  + Contains exact query as performed, followed by resulting pubmed ID, article title, journal, and publication year  
+* CoPublication_table_counts.txt
+  + Contains all pairwise author combinations and the resulting number of articles identified
+* CoPublication_network.pdf
+  + Co-publication network graph for all articles identified
+ 
+**_Note: these tables will contain redundancies_**! `Author1:Author2` and `Author2:Author1` will of course return the same results and are not filtered. Moreover, articles that match more than two authors in the input list will show up in the results of each and every relevant pairwise query.
