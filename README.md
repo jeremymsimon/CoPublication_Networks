@@ -30,12 +30,18 @@ Options:
 	-a AFFL, --affl=AFFL
 		Author affiliation for query, e.g. 'University of North Carolina'
 
+	-k APIKEY, --apikey=APIKEY
+		Optional. NCBI API key for large queries, [default NULL]
+		HIGHLY recommended, refer to E-utilities documentation here:
+			https://www.ncbi.nlm.nih.gov/books/NBK25497/
+
 	-h, --help
 		Show this help message and exit
 ```
 
 # Required R dependencies, note currently only tested in `R v4.1.0`
 * `reutils`
+* `XML`
 * `tidyverse`
 * `readxl`
 * `optparse`
