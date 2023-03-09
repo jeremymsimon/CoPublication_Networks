@@ -11,8 +11,10 @@ An example input query author list is as follows, here a list of highly-cited Cr
 ![image](https://user-images.githubusercontent.com/37712091/223880250-a15fee3f-f005-4dba-8c60-85c19689c417.png)
 
 
-# Input parameters
+# Input parameters and example usage
 ```
+Usage: Rscript FacultyCoPubSearchNetworks.R -i highly_cited_UNC_testinput.xlsx --minyear=2013 --maxyear=2023 -a \'University of North Carolina\' -k abcdefg1234567
+
 Options:
 	-i FILENAME, --input=FILENAME
 		Filename of input table containing faculty names
