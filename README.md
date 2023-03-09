@@ -79,3 +79,12 @@ _plus lots of other possibilities_, so choose your input names wisely, and again
   + Co-publication network graph for all articles identified
  
 **_Note: these tables will contain redundancies_**! `Author1:Author2` and `Author2:Author1` will of course return the same results and are not filtered. Moreover, articles that match more than two authors in the input list will show up in the results of each and every relevant pairwise query.
+
+# Possible variations, modifications, and uses
+* Run as-is on an entire list of department members to generate a co-publication network
+* Modify to utilize author role to query faculty and trainee co-publications for a T32 proposal
+	+ split `input_list` by role type and loop through each separately
+* Remove the pairwise query aspect to find all publications by a single list of authors
+* Other variations and tools have been constructed in the past by others, see:
+	+ https://github.com/dkarneman/pubmetric
+	+ https://ncstrategic.com/pubkeeper.html
