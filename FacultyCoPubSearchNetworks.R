@@ -1,39 +1,76 @@
 suppressPackageStartupMessages(library(reutils))
-suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(XML))
+suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(readxl))
 suppressPackageStartupMessages(library(optparse))
 suppressPackageStartupMessages(library(tools))
 suppressPackageStartupMessages(library(qgraph))
-suppressPackageStartupMessages(library(RColorBrewer))
-suppressPackageStartupMessages(library(gplots))
 
 # Parse input options
 option_list <- list( 
     make_option(c("-i", "--input"), 
-	type="character", 
-        help="Filename of input table containing faculty names\n\t\tMust be tab-delimited text or xlsx\n\t\t\tColumn 1: AuthorLast AuthorFirst\n\t\t\tColumn 2: AuthorLast AuthorFirstInitial\n\t\t\tColumn 3: AuthorRole",
+	type="character",
+	default=NA,
+        help="Required. Filename of input table containing faculty names\n\t\tMust be tab-delimited text or xlsx\n\t\t\tColumn 1: AuthorLast AuthorFirst\n\t\t\tColumn 2: AuthorLast AuthorFirstInitial\n\t\t\tColumn 3: AuthorRole",
         metavar="FILENAME"),
     make_option("--minyear", 
 	type="double", 
-        help = "Beginning year of date range for query (YYYY)",
+	default=NA,
+        help = "Required. Beginning year of date range for query (YYYY)",
         metavar="MINYEAR"),
     make_option("--maxyear", 
 	type="double", 
-        help="End year of date range for query (YYYY)",
+	default=NA,
+        help="Required. End year of date range for query (YYYY)",
         metavar="MAXYEAR"),
     make_option(c("-a","--affl"), 
 	type="character",
-        help="Author affiliation for query, e.g. 'University of North Carolina'",
-        metavar="AFFL")
-    )
+	default=NA,
+        help="Required. Author affiliation for query, e.g. 'University of North Carolina'",
+        metavar="AFFL"),
+    make_option(c("-k","--apikey"),
+	type="character",
+	help="Optional. NCBI API key for large queries, [default %default]\n\t\tHIGHLY recommended, refer to E-utilities documentation here:\n\t\t\thttps://www.ncbi.nlm.nih.gov/books/NBK25497/",
+	metavar="APIKEY",
+	default=NULL)
+)
 
 opt <- parse_args(OptionParser(option_list=option_list))
 
-mindate <- opt$minyear
-maxdate <- opt$maxyear
-input <- opt$input
-affl <- opt$affl
+# Check required input parameters were provided
+if (!is.na(opt$minyear)) {
+	mindate <- opt$minyear
+} else {
+	print_help(OptionParser(option_list=option_list))
+	stop("minyear parameter must be provided. See script usage (--help)")
+}
+
+if (!is.na(opt$maxyear)) {
+        maxdate <- opt$maxyear
+} else {
+	print_help(OptionParser(option_list=option_list))
+	stop("maxyear parameter must be provided. See script usage (--help)")
+}
+
+if (!is.na(opt$input)) {
+        input <- opt$input
+} else {
+	print_help(OptionParser(option_list=option_list))
+	stop("input filename must be provided. See script usage (--help)")
+}
+
+if (!is.na(opt$affl)) {
+        affl <- opt$affl  
+} else {
+	print_help(OptionParser(option_list=option_list))
+	stop("affl parameter must be provided. See script usage (--help)")
+}
+
+
+# Set NCBI API key if provided
+if(!is.null(opt$apikey)) {
+	options(reutils.api.key = opt$apikey)
+}
 
 # Import author table
 if(file_ext(input)=="xlsx") {
@@ -50,9 +87,9 @@ results_counts <- c()
 for(i in 1:length(input_list$Full)) {
 	for(j in 1:length(input_list$Full)) {
 		if(i==j) next
-		# Incorporate sleeps to slow down queries and avoid error about too many requests
+		# Incorporate sleeps to slow down queries and avoid overloading server
 		if(i %% 2 == 0 || j %% 2 == 0) {
-			Sys.sleep(3)
+			Sys.sleep(10)
 		}
 		
 		auth1_full <- as.character(input_list[i,"Full"])
