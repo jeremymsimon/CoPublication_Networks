@@ -7,8 +7,9 @@ The input query author list (`.xlsx`, or tab-delimited text readable by `read_ts
 2) Author last name `<space>` Author first initial
 3) Author role (currently ignored)
 
-A snippet of an example input query author list is as follows:  
-![image](https://user-images.githubusercontent.com/37712091/223865882-f4ead60d-0570-4bb3-8b06-9622fc144bbb.png)
+An example input query author list is as follows, here a list of highly-cited Cross-Field authors at UNC Chapel Hill:  
+![image](https://user-images.githubusercontent.com/37712091/223880250-a15fee3f-f005-4dba-8c60-85c19689c417.png)
+
 
 # Input parameters
 ```
