@@ -70,12 +70,12 @@ Another consideration is when authors have multiple given or family names. Acade
 _plus lots of other possibilities_, so choose your input names wisely, and again manual pruning of the output may be desired for these cases. 
 
 
-# Output
-* CoPublication_table_full.txt
+# Example Output
+* [CoPublication_table_full.txt](CoPublication_table_full.txt)
   + Contains exact query as performed, followed by resulting pubmed ID, article title, journal, and publication year  
-* CoPublication_table_counts.txt
+* [CoPublication_table_counts.txt](CoPublication_table_counts.txt)
   + Contains all pairwise author combinations and the resulting number of articles identified
-* CoPublication_network.pdf
+* [CoPublication_network.pdf](CoPublication_network.pdf)
   + Co-publication network graph for all articles identified
  
 **_Note: these tables will contain redundancies_**! `Author1:Author2` and `Author2:Author1` will of course return the same results and are not filtered. Moreover, articles that match more than two authors in the input list will show up in the results of each and every relevant pairwise query.
