@@ -34,6 +34,14 @@ Options:
 		Show this help message and exit
 ```
 
+# Required R dependencies, note currently only tested in `R v4.1.0`
+* `reutils`
+* `tidyverse`
+* `readxl`
+* `optparse`
+* `tools`
+* `qgraph`
+
 # Query performed
 The pubmed query performed here searches for either instance of the author's names, in essence:  
 `(author1 full name OR author1 first initial) AND (author2 full name OR author2 first initial)`
