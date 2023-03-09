@@ -54,6 +54,15 @@ The pubmed query performed here searches for either instance of the author's nam
 
 And further, is specific to the specified affiliation (`-a` or `--affl`) such that the query includes this for each author's `[AFFL]`. This largely avoids issues where a given author name is not "pubmed unique". However, _author's names that are not unique to the given affiliation will return any and all matches_; thus some manual pruning of the output may be desired. 
 
+Another consideration is when authors have multiple given or family names. Academic journals and pubmed do not handle these consistently! So if someone on my input list publishes under a name like "John Jacob Jingleheimer Schmidt", pubmed may list them as:
+* Schmidt John
+* Schmidt John Jacob
+* Jingleheimer Schmidt John
+* Jingleheimer Schmidt John Jacob
+
+_plus lots of other possibilities_, so choose your input names wisely, and again manual pruning of the output may be desired for these cases. 
+
+
 # Output
 * CoPublication_table_full.txt
   + Contains exact query as performed, followed by resulting pubmed ID, article title, journal, and publication year  
