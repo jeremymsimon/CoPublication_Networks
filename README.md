@@ -5,7 +5,7 @@ This repository contains code to generate co-publication networks in `R`. We per
 The input query author list (`.xlsx`, or tab-delimited text readable by `read_tsv`) has three columns:  
 1) Author last name `<space>` Author first name
 2) Author last name `<space>` Author first initial
-3) Author role (currently ignored)
+3) Author primary affiliation (e.g. Dana-Farber Cancer Institute)
 
 An example input query author list is as follows, here a list of highly-cited Cross-Field authors at UNC Chapel Hill:  
 ![image](https://user-images.githubusercontent.com/37712091/223880250-a15fee3f-f005-4dba-8c60-85c19689c417.png)
@@ -17,7 +17,6 @@ Usage: Rscript FacultyCoPubSearchNetworks.R \
 	-i highly_cited_UNC_testinput.xlsx \
 	--minyear=2013 \
 	--maxyear=2023 \
-	-a 'University of North Carolina' \
 	-k abcdefg1234567
 
 Options:
@@ -33,9 +32,6 @@ Options:
 
 	--maxyear=MAXYEAR
 		End year of date range for query (YYYY)
-
-	-a AFFL, --affl=AFFL
-		Author affiliation for query, e.g. 'University of North Carolina'
 
 	-k APIKEY, --apikey=APIKEY
 		Optional. NCBI API key for large queries, [default NULL]
@@ -59,7 +55,8 @@ Options:
 The pubmed query performed here searches for either instance of the author's names, in essence:  
 `(author1 full name OR author1 first initial) AND (author2 full name OR author2 first initial)`
 
-And further, is specific to the specified affiliation (`-a` or `--affl`) such that the query includes this for each author's `[AFFL]`. This largely avoids issues where a given author name is not "pubmed unique". However, _author's names that are not unique to the given affiliation will return any and all matches_; thus some manual pruning of the output may be desired. 
+And further, is specific to the specified affiliation (provided as the 3rd column) such that the query includes this for each author's `[AFFL]`. This largely avoids issues 
+where a given author name is not "pubmed unique". However, _author's names that are not unique to the given affiliation will return any and all matches_; thus some manual pruning of the output may be desired. 
 
 Another consideration is when authors have multiple given or family names. Academic journals and pubmed do not handle these consistently! So if someone on my input list publishes under a name like "John Jacob Jingleheimer Schmidt", pubmed may list them as:
 * Schmidt John

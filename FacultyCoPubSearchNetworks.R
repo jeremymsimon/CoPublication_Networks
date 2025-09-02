@@ -9,30 +9,25 @@ suppressPackageStartupMessages(library(qgraph))
 # Parse input options
 option_list <- list( 
     make_option(c("-i", "--input"), 
-	type="character",
-	default=NA,
-        help="Required. Filename of input table containing faculty names\n\t\tMust be tab-delimited text or xlsx\n\t\t\tColumn 1: AuthorLast AuthorFirst\n\t\t\tColumn 2: AuthorLast AuthorFirstInitial\n\t\t\tColumn 3: AuthorRole",
+		type="character",
+		default=NA,
+        help="Required. Filename of input table containing faculty names\n\t\tMust be tab-delimited text or xlsx\n\t\t\tColumn 1: AuthorLast AuthorFirst\n\t\t\tColumn 2: AuthorLast AuthorFirstInitial\n\t\t\tColumn 3: Primary affiliation",
         metavar="FILENAME"),
     make_option("--minyear", 
-	type="double", 
-	default=NA,
+		type="double", 
+		default=NA,
         help = "Required. Beginning year of date range for query (YYYY)",
         metavar="MINYEAR"),
     make_option("--maxyear", 
-	type="double", 
-	default=NA,
+		type="double", 
+		default=NA,
         help="Required. End year of date range for query (YYYY)",
         metavar="MAXYEAR"),
-    make_option(c("-a","--affl"), 
-	type="character",
-	default=NA,
-        help="Required. Author affiliation for query, e.g. 'University of North Carolina'",
-        metavar="AFFL"),
     make_option(c("-k","--apikey"),
-	type="character",
-	help="Optional. NCBI API key for large queries, [default %default]\n\t\tHIGHLY recommended, refer to E-utilities documentation here:\n\t\t\thttps://www.ncbi.nlm.nih.gov/books/NBK25497/",
-	metavar="APIKEY",
-	default=NULL)
+		type="character",
+		help="Optional. NCBI API key for large queries, [default %default]\n\t\tHIGHLY recommended, refer to E-utilities documentation here:\n\t\t\thttps://www.ncbi.nlm.nih.gov/books/NBK25497/",
+		metavar="APIKEY",
+		default=NULL)
 )
 
 opt <- parse_args(OptionParser(option_list=option_list))
@@ -59,13 +54,6 @@ if (!is.na(opt$input)) {
 	stop("input filename must be provided. See script usage (--help)")
 }
 
-if (!is.na(opt$affl)) {
-        affl <- opt$affl  
-} else {
-	print_help(OptionParser(option_list=option_list))
-	stop("affl parameter must be provided. See script usage (--help)")
-}
-
 
 # Set NCBI API key if provided
 if(!is.null(opt$apikey)) {
@@ -74,9 +62,9 @@ if(!is.null(opt$apikey)) {
 
 # Import author table
 if(file_ext(input)=="xlsx") {
-	input_list <- read_excel(input,col_names=c("Full","Short","Title"))
+	input_list <- read_excel(input,col_names=c("Full","Short","Affiliation"))
 } else{
-	input_list <- read_tsv(input,col_names=c("Full","Short","Title"))
+	input_list <- read_tsv(input,col_names=c("Full","Short","Affiliation"))
 }
 
 
@@ -96,13 +84,15 @@ for(i in 1:length(input_list$Full)) {
 		auth2_full <- as.character(input_list[j,"Full"])
 		auth1_short <- as.character(input_list[i,"Short"])
 		auth2_short <- as.character(input_list[j,"Short"])
+		auth1_affl <- as.character(input_list[i,"Affiliation"])
+		auth2_affl <- as.character(input_list[j,"Affiliation"])
 
-		term <- paste0("(",auth1_full, " [AUTH] ",affl," [AFFL] OR ",auth1_short," [AUTH] ",affl," [AFFL]) AND (",auth2_full, " [AUTH] ",affl," [AFFL] OR ",auth2_short," [AUTH] ",affl, " [AFFL])")
+		term <- paste0("(",auth1_full, " [AUTH] ",auth1_affl," [AFFL] OR ",auth1_short," [AUTH] ",auth1_affl," [AFFL]) AND (",auth2_full, " [AUTH] ",auth2_affl," [AFFL] OR ",auth2_short," [AUTH] ",auth2_affl, " [AFFL])")
 		print(term)
 		e <- suppressMessages(esearch(db = "pubmed",
 					term = term,
-					mindate=mindate,
-					maxdate=maxdate
+					mindate = as.character(mindate),
+					maxdate = as.character(maxdate)
 				))
 		if (is.null(e$errors$wrnmsg)) {
 			tbl.full <- efetch(e) |>
